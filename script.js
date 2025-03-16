@@ -1,39 +1,64 @@
-let tb = document.querySelector("table")
-let data = localStorage.getItem("passwords")
-if (data == null){
-    tb.innerHTML = "No data to show"
-}
-else{
-     
+const deletePassword = (website)=>{
+    let data = localStorage.getItem("passwords")
     let arr = JSON.parse(data);
-    let str = ""
-    for (let index =0;  index<arr.length; index++){
-        const element = arr[index];
-     str += `<tr>
+    arrUpdated = arr.filter((e)=>{
+        return e.website != website
+    })
+    localStorage.setItem("passwords", JSON.stringify(arrUpdated))
+    alert(`Successfully Deleted ${website}'s password`)
+    showPasswords();
+   
+}
+
+
+const showPasswords = () => {
+    let tb = document.querySelector("table")
+    let data = localStorage.getItem("passwords")
+    if (data == null) {
+        tb.innerHTML = "No data to show"
+    }
+    else {
+        tb.innerHTML = `<tr>
+                <th>Website</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Delete</th>
+            </tr> `
+        let arr = JSON.parse(data);
+        let str = ""
+        for (let index = 0; index < arr.length; index++) {
+            const element = arr[index];
+            str += `<tr>
     <td>${element.website}</td>
     <td>${element.username}</td>
     <td>${element.password}</td>
-    <td>${"Delete"}</td>
+    <td><button class="btnsm" onclick="deletePassword('${element.website}')">Delete</button></td>
     </tr>`
-}
-    tb.innerHTML = tb.innerHTML + str;
+        }
+        tb.innerHTML = tb.innerHTML + str;
+    }
+    website.value =""
+    username.value =""
+    password.value =""
 }
 console.log("Workiing")
-document.querySelector(".btn").addEventListener("click",(e)=>{
+showPasswords();
+document.querySelector(".btn").addEventListener("click", (e) => {
     e.preventDefault();
     console.log("Submited");
     console.log(username.value, password.value)
     let passwords = localStorage.getItem("passwords")
     console.log(passwords)
-    if(passwords ==  null){
+    if (passwords == null) {
         let json = []
-        json.push({username : username.value, password :  password.value})
+        json.push({ website: website.value, username: username.value, password: password.value })
         alert("Password Saved")
         localStorage.setItem("passwords", JSON.stringify(json))
-    } else{
+    } else {
         let json = JSON.parse(localStorage.getItem("passwords"))
-        json.push({username : username.value, password :  password.value})
+        json.push({ website: website.value, username: username.value, password: password.value })
         alert("Password Saved")
         localStorage.setItem("passwords", JSON.stringify(json))
     }
+    showPasswords();
 })
